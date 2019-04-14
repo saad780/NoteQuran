@@ -1,6 +1,6 @@
 surah = 2
 start = 60
-stop = 101
+stop = 63
 
 import requests
 from docx import Document
@@ -30,12 +30,16 @@ section.bottom_margin = Inches(.17)
 
 table = document.add_table(rows=0, cols=2)
 table.alignment = WD_TABLE_ALIGNMENT.CENTER
+
+s = requests.session()
+
+start_time = time.time()
 for x in range(start, stop+1):
   print(x)
   while(True):
     try:
-      ayah = requests.get(url + str(x)).json()['data']['text']
-      tran = requests.get(url + str(x) + '/en.sahih').json()['data']['text']
+      ayah = s.get(url + str(x)).json()['data']['text']
+      tran = s.get(url + str(x) + '/en.sahih').json()['data']['text']
       break
     except:
       print("except")
@@ -54,5 +58,7 @@ for x in range(start, stop+1):
 
 
 document.save('test.docx')
+
+print(time.time()-start_time)
 
 print('done')
