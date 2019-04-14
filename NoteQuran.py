@@ -9,15 +9,10 @@ from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.shared import Pt
 from docx.enum.style import WD_STYLE_TYPE
+import time
 
 
 url = 'http://api.alquran.cloud/ayah/'
-
-# rayah = requests.get(url + '1')
-# rtran = requests.get(url + '1/en.sahih')
-
-# tran = rtran.json()['data']['text']
-# ayah = rayah.json()['data']['text']
 
 document = Document()
 section = document.sections[0]
@@ -36,10 +31,18 @@ section.bottom_margin = Inches(.17)
 table = document.add_table(rows=0, cols=2)
 table.alignment = WD_TABLE_ALIGNMENT.CENTER
 for x in range(start, stop+1):
-  ayah = requests.get(url + str(x)).json()['data']['text']
-  tran = requests.get(url + str(x) + '/en.sahih').json()['data']['text']
+  print(x)
+  while(True):
+    try:
+      ayah = requests.get(url + str(x)).json()['data']['text']
+      tran = requests.get(url + str(x) + '/en.sahih').json()['data']['text']
+      break
+    except:
+      print("except")
+      time.sleep(.3) #Request fails so pause needed before retry.
+
   row_cells = table.add_row().cells
-  row_cells[0].text = tran
+  row_cells[0].text = str(x) + ". " + tran
   row_cells[1].text = ayah
   # row_cells[1].paragraphs[0].style = rtlstyle
   # row_cells[1].paragraphs[0].runs[0].font.rtl = True
@@ -52,8 +55,4 @@ for x in range(start, stop+1):
 
 document.save('test.docx')
 
-# print(requests.get(url + '1').json()['data']['text'])
-# print(ayah)
-# print(tran)
-# print('\n\n')
 print('done')
