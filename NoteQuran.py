@@ -43,7 +43,7 @@ for x in range(start, stop+1):
       break
     except:
       print("except")
-      time.sleep(.3) #Request fails so pause needed before retry.
+      time.sleep(.3) #Request fails so pause needed before retry
 
   row_cells = table.add_row().cells
   row_cells[0].text = str(x) + ". " + tran
